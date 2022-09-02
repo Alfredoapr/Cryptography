@@ -32,19 +32,22 @@ vector<int> extendEuclides(int a, int b){
     }
     check_A.push_back(d);  // if d == 1, A es valida
     check_A.push_back(x);   // retorna a^-
-    //check_A.push_back(d); // no  es un valor relevante para el programa.
+    return check_A;
 }
+
 
 vector<pair<int,int>> valid_keyA(int tamAlphabet){
     vector<pair<int,int>> keysA;
     pair<int,int> insertA;
     for(int i = 1; i < tamAlphabet; i++){
         auto aux = extendEuclides(i,tamAlphabet);
+        //cout << aux[i] << " ";
         if(aux[0] == 1){
-            if(aux[1] < 0)
+            if(aux[1] < 0){
                 aux[1] = tamAlphabet - ((-aux[1]) % tamAlphabet);
-            insertA.first = i;
-            insertA.second = aux[1];
+            }
+            insertA.first = i;      //inserta A
+            insertA.second = aux[1];    //insert a^-1
             keysA.push_back(insertA);
         }
     }
@@ -52,29 +55,33 @@ vector<pair<int,int>> valid_keyA(int tamAlphabet){
 }
 
 void validKeys(int tamano){
+    ofstream MyFile("keysAffineCipher");
     int tamAlfabeto = tamano;
     auto keyA = valid_keyA(tamAlfabeto);
     vector<pair<pair<int,int>,int>> keys;
     pair<pair<int,int>,int> positions;
 
-    for(int i = 1; i < tamAlfabeto; i++){
-        positions.first = keyA[i];
-        positions.second = i;
-        keys.push_back(positions);
+    for(int i = 0; i <keyA.size(); i++){       //Recorrer el tamaño del vector de A's 
+        for(int k = 0; k < tamAlfabeto; k++){       //Recorro Zn para poder tomar el valor de Bb
+            positions.first.first = keyA[i].first;      //insertar en el vector final A
+            positions.first.second = keyA[i].second;    //insertar en el vector final A^-1
+            positions.second = k;                       //insertar en el vector final b
+            keys.push_back(positions);
+        }
     }
-
-    for(int j = 0; j < tamAlfabeto ; j++){
-        cout << "Key A: " << keys[j].first.first << " Key B: " << keys[j].second << " A^-1: " << keys[j].first.second << endl;
+    for(int j = 0; j < keys.size() ; j++){
+        MyFile << "Key A: " << keys[j].first.first << ", Key B: " << keys[j].second << ", A^-1: " << keys[j].first.second << endl;
     }
-    //return ;
+    MyFile.close();
 } 
 
-int main(){
 
+int main(){
     int tamano;
     cout << "Ingresa el tamaño del alfabeto " << endl;
     cin >> tamano;
     validKeys(tamano);
-
+    //extendEuclides(5,21);
+    //valid_keyA(tamano);
     return 0;
 }
