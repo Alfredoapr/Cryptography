@@ -7,6 +7,8 @@ using namespace std;
 vector<int> extendEuclides(int a, int b){
     vector<int> check_A;
     int u,v,q,r,x,y,d;
+    u = a;
+    v = b;
     int x1 = 1;
     int y1 = 0;
     int x2 = 0;
